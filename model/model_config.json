@@ -1,0 +1,24 @@
+{
+    "dataset_slug": "nirmalsankalana/rice-leaf-disease-image",
+    "class_names": [
+        "Bacterialblight",
+        "Blast",
+        "Brownspot",
+        "Tungro"
+    ],
+    "class_to_index": {
+        "Bacterialblight": 0,
+        "Blast": 1,
+        "Brownspot": 2,
+        "Tungro": 3
+    },
+    "num_classes": 4,
+    "image_size": 224,
+    "input_channels": 3,
+    "architecture": "EfficientNetB0 Transfer Learning",
+    "test_accuracy": 0.9930555820465088,
+    "test_loss": 0.02795916050672531,
+    "weighted_precision": 0.9932432432432433,
+    "weighted_recall": 0.9930555555555556,
+    "weighted_f1_score": 0.9930417735611597
+}

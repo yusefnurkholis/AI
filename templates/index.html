@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard klasifikasi penyakit daun padi berbasis EfficientNetB0">
+    <title>RiceLeaf AI — Klasifikasi Penyakit Daun Padi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="#beranda">
+            <span class="brand-mark">R</span>
+            <span>RiceLeaf AI</span>
+        </a>
+        <nav>
+            <a href="#materi">Materi</a>
+            <a href="#arsitektur">Arsitektur</a>
+            <a href="#hasil">Hasil Training</a>
+            <a href="#prediksi">Prediksi</a>
+        </nav>
+        <button id="menuButton" class="menu-button" aria-label="Buka menu">☰</button>
+    </header>
+
+    <main>
+        <section id="beranda" class="hero">
+            <div class="hero-copy">
+                <span class="eyebrow">Computer Vision untuk Pertanian</span>
+                <h1>Kenali penyakit daun padi dengan bantuan <em>deep learning</em>.</h1>
+                <p>
+                    Dashboard ini menyajikan materi proyek, proses pembangunan model,
+                    hasil evaluasi, dan pengujian gambar baru menggunakan EfficientNetB0.
+                </p>
+                <div class="hero-actions">
+                    <a class="button primary" href="#prediksi">Uji gambar daun</a>
+                    <a class="button secondary" href="#hasil">Lihat hasil model</a>
+                </div>
+                <div class="status-row">
+                    <span id="modelStatus" class="status-chip">Memeriksa model...</span>
+                    <span id="dataStatus" class="status-chip">Memeriksa hasil training...</span>
+                </div>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+                <div class="leaf-card leaf-card-main">
+                    <span class="scan-line"></span>
+                    <div class="leaf-symbol">🌾</div>
+                    <div class="scan-label">AI Leaf Analysis</div>
+                </div>
+                <div class="float-card card-a">
+                    <small>Arsitektur</small>
+                    <strong id="architectureText">EfficientNetB0</strong>
+                </div>
+                <div class="float-card card-b">
+                    <small>Ukuran input</small>
+                    <strong id="imageSizeText">224 × 224</strong>
+                </div>
+            </div>
+        </section>
+
+        <section id="materi" class="section">
+            <div class="section-heading">
+                <span class="eyebrow">Materi Proyek</span>
+                <h2>Alur pengembangan model</h2>
+                <p>Isi materi mengikuti delapan tahap pada notebook Google Colab.</p>
+            </div>
+            <div class="process-grid">
+                <article class="process-card">
+                    <span>01</span><h3>Data Collection</h3>
+                    <p>Dataset Rice Leaf Disease Images diunduh dari Kaggle melalui kagglehub.</p>
+                </article>
+                <article class="process-card">
+                    <span>02</span><h3>EDA</h3>
+                    <p>Distribusi kelas, sampel gambar, resolusi, gambar rusak, dan duplikat diperiksa.</p>
+                </article>
+                <article class="process-card">
+                    <span>03</span><h3>Data Processing</h3>
+                    <p>Data dibagi 70:15:15, di-resize, di-batch, dan diaugmentasi.</p>
+                </article>
+                <article class="process-card">
+                    <span>04</span><h3>Feature Engineering</h3>
+                    <p>EfficientNetB0 mengekstraksi pola warna, tekstur, bercak, dan bentuk kerusakan.</p>
+                </article>
+                <article class="process-card">
+                    <span>05</span><h3>Modelling</h3>
+                    <p>Transfer learning dilanjutkan fine-tuning layer terakhir dengan learning rate kecil.</p>
+                </article>
+                <article class="process-card">
+                    <span>06</span><h3>Evaluation</h3>
+                    <p>Accuracy, loss, precision, recall, F1-score, dan confusion matrix dianalisis.</p>
+                </article>
+                <article class="process-card">
+                    <span>07</span><h3>Simpan Model</h3>
+                    <p>Model, konfigurasi, history, dan classification report disimpan sebagai artefak.</p>
+                </article>
+                <article class="process-card">
+                    <span>08</span><h3>Inference</h3>
+                    <p>Gambar eksternal diproses untuk memperoleh kelas dan confidence prediksi.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="arsitektur" class="section architecture-section">
+            <div class="section-heading">
+                <span class="eyebrow">Arsitektur Model</span>
+                <h2>Transfer learning EfficientNetB0</h2>
+            </div>
+            <div class="architecture-flow">
+                <div class="architecture-node"><small>Input</small><strong>224 × 224 × 3</strong></div>
+                <div class="connector">→</div>
+                <div class="architecture-node"><small>Augmentasi</small><strong>Flip, Rotate, Zoom</strong></div>
+                <div class="connector">→</div>
+                <div class="architecture-node featured"><small>Feature Extractor</small><strong>EfficientNetB0</strong></div>
+                <div class="connector">→</div>
+                <div class="architecture-node"><small>Pooling</small><strong>Global Average</strong></div>
+                <div class="connector">→</div>
+                <div class="architecture-node"><small>Regularisasi</small><strong>BatchNorm + Dropout</strong></div>
+                <div class="connector">→</div>
+                <div class="architecture-node"><small>Output</small><strong>Softmax</strong></div>
+            </div>
+        </section>
+
+        <section id="hasil" class="section results-section">
+            <div class="section-heading row-heading">
+                <div>
+                    <span class="eyebrow">Hasil Training</span>
+                    <h2>Evaluasi performa model</h2>
+                </div>
+                <span class="note">Data dibaca dari artefak hasil notebook, bukan angka contoh.</span>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card"><small>Test Accuracy</small><strong id="metricAccuracy">—</strong></div>
+                <div class="metric-card"><small>Test Loss</small><strong id="metricLoss">—</strong></div>
+                <div class="metric-card"><small>Precision</small><strong id="metricPrecision">—</strong></div>
+                <div class="metric-card"><small>Recall</small><strong id="metricRecall">—</strong></div>
+                <div class="metric-card"><small>F1-score</small><strong id="metricF1">—</strong></div>
+            </div>
+
+            <div id="emptyResults" class="empty-state hidden">
+                <h3>Hasil training belum ditemukan</h3>
+                <p>Jalankan notebook sampai tahap Simpan Model, lalu salin artefaknya ke folder web sesuai README.</p>
+            </div>
+
+            <div class="chart-grid">
+                <article class="panel">
+                    <div class="panel-title"><h3>Accuracy per Epoch</h3></div>
+                    <div class="chart-wrap"><canvas id="accuracyChart"></canvas></div>
+                </article>
+                <article class="panel">
+                    <div class="panel-title"><h3>Loss per Epoch</h3></div>
+                    <div class="chart-wrap"><canvas id="lossChart"></canvas></div>
+                </article>
+            </div>
+
+            <div class="chart-grid">
+                <article class="panel">
+                    <div class="panel-title"><h3>Confusion Matrix</h3></div>
+                    <div id="confusionMatrix" class="matrix-wrap">
+                        <p class="placeholder">Belum ada data confusion matrix.</p>
+                    </div>
+                </article>
+                <article class="panel">
+                    <div class="panel-title"><h3>Classification Report</h3></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kelas</th><th>Precision</th><th>Recall</th><th>F1-score</th><th>Support</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportBody">
+                                <tr><td colspan="5">Belum ada data classification report.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="prediksi" class="section prediction-section">
+            <div class="section-heading">
+                <span class="eyebrow">Inference</span>
+                <h2>Uji gambar daun padi</h2>
+                <p>Unggah JPG, JPEG, PNG, atau WEBP dengan ukuran maksimal 10 MB.</p>
+            </div>
+
+            <div class="prediction-layout">
+                <form id="predictionForm" class="upload-panel">
+                    <label id="dropZone" class="drop-zone" for="imageInput">
+                        <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+                        <div id="uploadPrompt">
+                            <div class="upload-icon">↑</div>
+                            <h3>Pilih atau jatuhkan gambar</h3>
+                            <p>Pastikan daun terlihat jelas dan tidak terlalu gelap.</p>
+                        </div>
+                        <img id="imagePreview" class="image-preview hidden" alt="Preview gambar">
+                    </label>
+                    <button id="predictButton" class="button primary full" type="submit">Analisis gambar</button>
+                    <p id="predictMessage" class="form-message"></p>
+                </form>
+
+                <article class="prediction-result panel">
+                    <div class="panel-title"><h3>Hasil Prediksi</h3></div>
+                    <div id="predictionEmpty" class="prediction-empty">
+                        <span>◎</span>
+                        <p>Hasil akan muncul setelah gambar dianalisis.</p>
+                    </div>
+                    <div id="predictionContent" class="hidden">
+                        <small>Kelas terdeteksi</small>
+                        <h3 id="predictedClass">—</h3>
+                        <div class="confidence-row">
+                            <span>Confidence</span>
+                            <strong id="predictionConfidence">—</strong>
+                        </div>
+                        <div class="progress"><span id="confidenceBar"></span></div>
+                        <p id="uncertainWarning" class="warning hidden">
+                            Confidence rendah. Hasil sebaiknya diverifikasi lebih lanjut.
+                        </p>
+                        <div id="probabilityList" class="probability-list"></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div>
+            <strong>RiceLeaf AI</strong>
+            <p>Dashboard akademik klasifikasi penyakit daun padi.</p>
+        </div>
+        <p>Model: EfficientNetB0 Transfer Learning</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

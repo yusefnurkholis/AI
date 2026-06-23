@@ -1,0 +1,1 @@
+Salin rice_leaf_disease_model.keras dan model_config.json ke folder ini.
